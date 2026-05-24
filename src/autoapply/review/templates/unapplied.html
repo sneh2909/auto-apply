@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}unapplied · auto-apply{% endblock %}
+{% block body %}
+
+<div class="page-header">
+  <div>
+    <h1>Unapplied</h1>
+    <div class="subtitle">Failed applications and scored jobs that haven't been routed.</div>
+  </div>
+</div>
+
+<h2 class="section-title">Failed applications &middot; {{ failed|length }}</h2>
+{% if failed %}
+  {% for it in failed %}
+  {% set score_class = 'low' if it.score < 6 else ('med' if it.score < 8 else '') %}
+  <div class="card">
+    <div class="row">
+      <div class="score-chip {{ score_class }}">{{ "%.1f"|format(it.score) }}</div>
+      <div class="grow">
+        <div class="row-tight">
+          <span class="job-title">{{ it.role }}</span>
+          <span class="badge badge-danger">FAILED</span>
+          <span class="channel-chip">{{ it.channel }}</span>
+        </div>
+        <div class="job-company">{{ it.company }}</div>
+        <div class="meta">
+          {% if it.job_url %}<a href="{{ it.job_url }}" target="_blank" rel="noopener">Job link &rarr;</a>{% endif %}
+        </div>
+        {% if it.error %}
+          <div style="margin-top: 0.5rem;"><span class="error-badge">{{ it.error }}</span></div>
+        {% endif %}
+        <div class="actions">
+          <form class="inline" method="post" action="/retry/{{ it.id }}">
+            <button type="submit" class="warning">Retry</button>
+          </form>
+          <form class="inline" method="post" action="/skip/{{ it.id }}">
+            <button type="submit" class="ghost sm">Dismiss</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+  <div class="empty"><span class="empty-icon">&#10003;</span> No failed applications.</div>
+{% endif %}
+
+<h2 class="section-title">Scored but not yet routed &middot; {{ unrouted|length }}</h2>
+{% if unrouted %}
+  {% for it in unrouted %}
+  {% set score_class = 'low' if it.score < 6 else ('med' if it.score < 8 else '') %}
+  <div class="card">
+    <div class="row">
+      <div class="score-chip {{ score_class }}">{{ "%.1f"|format(it.score) }}</div>
+      <div class="grow">
+        <div class="row-tight">
+          <span class="job-title">{{ it.role }}</span>
+          <span class="badge badge-neutral">UNROUTED</span>
+        </div>
+        <div class="job-company">{{ it.company }}</div>
+        <div class="meta">
+          {% if it.job_url %}<a href="{{ it.job_url }}" target="_blank" rel="noopener">Job link &rarr;</a>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 1rem;">
+    Run <strong>Route applications</strong> from the <a href="/">Pipeline</a> tab to process these.
+  </p>
+{% else %}
+  <div class="empty"><span class="empty-icon">&#9989;</span> All scored jobs have been routed.</div>
+{% endif %}
+
+{% endblock %}

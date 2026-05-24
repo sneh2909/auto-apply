@@ -1,0 +1,18 @@
+# Auto-answers used during ATS auto-fill (channel A) for common custom questions.
+# Keys are lowercase substrings matched against the question label.
+# Values can reference profile fields via "from:profile.career.notice_period_days".
+
+"notice period":                "60"
+"how soon can you join":        "30"
+"current ctc":                  "0"
+"current compensation":         "0"
+"expected ctc":                 "2500000"
+"expected compensation":        "2500000"
+"are you authorized to work":   "Yes"
+"are you legally authorized":   "Yes"
+"willing to relocate":          "Yes"
+"how did you hear about us":    "Company website"
+"years of experience":          "2"
+"are you currently employed":   "Yes"
+"reason for change":            "Looking for stronger ML engineering challenges and a product I can grow with long-term."
+"sponsorship":                  "No, I do not require visa sponsorship for India-based roles."

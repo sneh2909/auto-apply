@@ -1,0 +1,19 @@
+# Companies to actively scan via their ATS public API (channel A priority).
+# Slug is the path on the ATS — e.g. boards-api.greenhouse.io/v1/boards/{slug}/jobs.
+
+greenhouse:
+  - slug: "datadog"
+    label: "Datadog"
+  - slug: "stripe"
+    label: "Stripe"
+  # ...add 30-50 ML-heavy companies you'd want to work at
+
+lever:
+  - slug: "scaleai"
+    label: "Scale AI"
+  # ...
+
+ashby:
+  - slug: "anthropic"
+    label: "Anthropic"
+  # ...

@@ -1,0 +1,17 @@
+# Companies / domains we should never apply to.
+# Match is case-insensitive substring on both company name and posting domain.
+
+companies:
+  - "NoBroker"
+  - "Salesken"
+  - "Convozen"
+        # example: a consultancy you don't want to work for
+  # - "Previous Employer"
+
+domains:
+  - "nobroker.com"
+  - "Convozen.ai"
+
+# Reasons (free-form, for your records):
+notes: |
+  Skip Nobroker and convozen by default.

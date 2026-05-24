@@ -1,0 +1,53 @@
+# Fed to the LLM for scoring and email composition. Edit with your details.
+
+identity:
+  full_name: "Sneh Shah"
+  email_primary: "snehshah2901@gmail.com"   # the dedicated sender, matches GMAIL_USER_EMAIL
+  phone: "+91 9428911398"
+  linkedin: "https://www.linkedin.com/in/sneh-shah29/"
+  github: "https://github.com/sneh2909"
+  portfolio: "https://sneh2909.github.io/Portfolio/"
+  location: "Bangalore, IN"
+  willing_to_relocate: ["Bengaluru","Bangalore","Ahmedabad","Mumbai","Hyderabad", "Pune", "Remote"]
+
+career:
+  years_experience: 2
+  current_title: "Machine Learning Engineer"
+  current_company: "NoBroker"
+  notice_period_days: 60
+  current_ctc_inr: 0
+  expected_ctc_inr: 0
+  work_authorisation: "Indian citizen"
+
+target:
+  roles:
+    - "Machine Learning Engineer"
+    - "MLOps Engineer"
+    - "Applied Scientist"
+    - "Deep Learning Engineer"
+    - "AI Engineer"
+  seniority: ["Mid", "Senior", "Staff", "Lead"]
+  industries_priority: ["AI startups", "Fintech", "Healthtech"]
+  industries_avoid: ["Adtech", "Gambling"]
+  remote_ok: true
+  on_site_cities_ok: ["Bangalore", "Hyderabad", "Pune"]
+  salary_min_inr: 2000000
+  deal_breakers:
+    - "Mandatory on-site outside Bangalore/Hyderabad/Pune"
+    - "Pure data-engineering role with no modelling"
+    - "Consultancy / staffing firm"
+
+skills:
+  primary: ["PyTorch", "Python", "LLMs", "Transformers", "MLOps"]
+  secondary: ["TensorFlow", "JAX", "Kubernetes", "Docker", "AWS Sagemaker", "GCP Vertex"]
+  domains: ["NLP", "Computer Vision", "Recommender Systems"]
+
+# The LLM picks the 2–3 most JD-relevant bullets per email. Write 5–10 strong ones.
+highlight_bullets:
+  - "Shipped X — concrete impact metric — at company Y"
+  - "Owned the production model for Z, p99 latency under 50ms"
+  - "..."
+
+always_apply: []           
+qa_overrides:
+  why_this_role_pattern: ""

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}blocklist · auto-apply{% endblock %}
+{% block body %}
+
+<div class="page-header">
+  <div>
+    <h1>Blocklist</h1>
+    <div class="subtitle">Companies and domains that will be skipped during routing.</div>
+  </div>
+</div>
+
+<div class="surface">
+  <div class="bl-section" style="margin-bottom: 1.5rem;">
+    <h2>Companies <span style="color: var(--text-subtle); font-weight: 500;">&middot; {{ companies|length }}</span></h2>
+    <ul class="bl-list">
+      {% for c in companies %}
+      <li>
+        <span>{{ c }}</span>
+        <form method="post" action="/blocklist/delete" class="inline">
+          <input type="hidden" name="kind" value="company">
+          <input type="hidden" name="value" value="{{ c }}">
+          <button type="submit" class="danger sm">Remove</button>
+        </form>
+      </li>
+      {% else %}
+      <li><span style="color: var(--text-subtle);">No companies blocked yet.</span></li>
+      {% endfor %}
+    </ul>
+    <form method="post" action="/blocklist/add" class="add-row">
+      <input type="hidden" name="kind" value="company">
+      <input type="text" name="value" placeholder="e.g. Acme Staffing" required>
+      <button type="submit" class="primary">Add</button>
+    </form>
+  </div>
+
+  <div class="bl-section">
+    <h2>Domains <span style="color: var(--text-subtle); font-weight: 500;">&middot; {{ domains|length }}</span></h2>
+    <ul class="bl-list">
+      {% for d in domains %}
+      <li>
+        <span>{{ d }}</span>
+        <form method="post" action="/blocklist/delete" class="inline">
+          <input type="hidden" name="kind" value="domain">
+          <input type="hidden" name="value" value="{{ d }}">
+          <button type="submit" class="danger sm">Remove</button>
+        </form>
+      </li>
+      {% else %}
+      <li><span style="color: var(--text-subtle);">No domains blocked yet.</span></li>
+      {% endfor %}
+    </ul>
+    <form method="post" action="/blocklist/add" class="add-row">
+      <input type="hidden" name="kind" value="domain">
+      <input type="text" name="value" placeholder="e.g. staffing.example.com" required>
+      <button type="submit" class="primary">Add</button>
+    </form>
+  </div>
+</div>
+
+{% if notes %}
+<h2 class="section-title">Notes</h2>
+<div class="notes-box">{{ notes }}</div>
+{% endif %}
+
+{% endblock %}

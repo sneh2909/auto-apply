@@ -1,0 +1,76 @@
+# =============================================================================
+# Secrets & credentials — never commit these
+# =============================================================================
+
+# Environment (API keys, MongoDB URI, Gmail address)
+.env
+.env.*
+!.env.example
+
+# Gmail OAuth (Desktop client JSON + authorized-user token)
+config/gmail_credentials.json
+data/gmail_token.json
+**/client_secrets.json
+**/credentials.json
+**/*_credentials.json
+
+# Google Cloud / Vertex service account keys
+config/service_account.json
+**/service_account*.json
+
+# Portal login email/password (UI writes here)
+config/portals.yaml
+
+# TLS / SSH / generic key material
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Common backup names people use for secrets
+.env.local
+.env.production
+.env.backup
+secrets.json
+*.secrets.yaml
+
+# =============================================================================
+# Local-only config (not in repo)
+# =============================================================================
+
+config/resume.pdf
+
+# =============================================================================
+# Runtime data (browser sessions, logs, tokens)
+# =============================================================================
+
+data/
+
+# =============================================================================
+# Python / tooling
+# =============================================================================
+
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+.uv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+dist/
+build/
+htmlcov/
+.coverage
+coverage.xml
+
+# =============================================================================
+# OS / editors
+# =============================================================================
+
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

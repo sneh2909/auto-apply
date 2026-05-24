@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}pipeline · auto-apply{% endblock %}
+{% block body %}
+
+<div class="page-header">
+  <div>
+    <h1>Pipeline</h1>
+    <div class="subtitle">Discover jobs, score, route, and approve before applying.</div>
+  </div>
+</div>
+
+{% if message %}
+  <div class="notice">{{ message }}</div>
+{% endif %}
+
+<section class="console">
+  <div class="stats">
+    <div class="stat-card"><span class="stat-value" id="stat-jobs">{{ stats.jobs }}</span><span class="stat-label">Jobs saved</span></div>
+    <div class="stat-card"><span class="stat-value" id="stat-unscored">{{ stats.unscored }}</span><span class="stat-label">Need score</span></div>
+    <div class="stat-card"><span class="stat-value" id="stat-queued">{{ stats.queued }}</span><span class="stat-label">In queue</span></div>
+    <div class="stat-card"><span class="stat-value" id="stat-approved">{{ stats.approved }}</span><span class="stat-label">Approved</span></div>
+    <div class="stat-card"><span class="stat-value" id="stat-failed">{{ stats.failed }}</span><span class="stat-label">Failed</span></div>
+  </div>
+  <div class="run-grid">
+    <form method="post" action="/run/full">
+      <button type="submit" class="primary">Run full pipeline</button>
+    </form>
+    <form method="post" action="/run/ingest">
+      <button type="submit">Ingest jobs</button>
+    </form>
+    <form method="post" action="/run/score">
+      <input type="hidden" name="limit" value="100">
+      <button type="submit">Score jobs</button>
+    </form>
+    <form method="post" action="/run/route">
+      <input type="hidden" name="limit" value="50">
+      <button type="submit">Route applications</button>
+    </form>
+  </div>
+  <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+    <span style="color: var(--text-muted); font-size: 0.85rem;">
+      Want to test the email send flow without finding a recruiter?
+    </span>
+    <form method="post" action="/test/send-self" class="inline">
+      <button type="submit" class="ghost sm">Create self-test email &rarr;</button>
+    </form>
+  </div>
+  <div style="margin-top: 0.5rem; padding-top: 0.75rem; border-top: 1px dashed var(--border);">
+    <label style="display: block; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-subtle); margin-bottom: 0.4rem;">Test apply to a specific URL</label>
+    <form method="post" action="/test/apply-url" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <input type="url" name="ats_url" placeholder="https://visa.wd5.myworkdayjobs.com/.../apply/autofillWithResume" required style="flex: 1; min-width: 300px;">
+      <button type="submit" class="primary">Test apply</button>
+    </form>
+    <div style="color: var(--text-subtle); font-size: 0.78rem; margin-top: 0.35rem;">
+      Detects Workday / Greenhouse / Lever / Naukri / Foundit / Instahyre from the URL and runs the matching autofiller.
+    </div>
+  </div>
+</section>
+
+<h2 class="section-title">Review queue &middot; {{ items|length }}</h2>
+
+{% if items %}
+  {% for it in items %}
+  {% set score_class = 'low' if it.score < 6 else ('med' if it.score < 8 else '') %}
+  <div class="card">
+    <div class="row">
+      <div class="score-chip {{ score_class }}">{{ "%.1f"|format(it.score) }}</div>
+      <div class="grow">
+        <div class="row-tight">
+          <span class="job-title">{{ it.role }}</span>
+          {% if it.is_email %}
+            <span class="badge badge-info">EMAIL</span>
+          {% else %}
+            <span class="badge badge-primary">{{ it.channel|upper }}</span>
+          {% endif %}
+        </div>
+        <div class="job-company">{{ it.company }}</div>
+        <div class="meta">
+          {% if it.job_url %}<a href="{{ it.job_url }}" target="_blank" rel="noopener">Job link &rarr;</a>{% endif %}
+          {% if it.recipient %}<span>{{ it.recipient }}</span>{% endif %}
+        </div>
+
+        {% if it.is_email %}
+          {% if it.has_draft %}
+            <form method="post" action="/approve/{{ it.id }}">
+              <div class="draft-section">
+                <label>Subject</label>
+                <input class="draft-input" type="text" name="draft_subject" value="{{ it.subject }}">
+                <label>Body</label>
+                <textarea class="draft-textarea" name="draft_body" rows="8">{{ it.body }}</textarea>
+              </div>
+              <div class="actions">
+                <button type="submit" class="success">Approve &rarr; Apply tab</button>
+                <button type="button" class="ghost sm" onclick="this.form.querySelector('textarea').style.height='auto';this.form.querySelector('textarea').style.height=(this.form.querySelector('textarea').scrollHeight)+'px';">Expand</button>
+              </div>
+            </form>
+            <form class="inline actions-tight" method="post" action="/skip/{{ it.id }}">
+              <button type="submit" class="danger sm">Skip</button>
+            </form>
+          {% else %}
+            <div class="actions">
+              <form class="inline" method="post" action="/draft/{{ it.id }}">
+                <button type="submit" class="primary">Generate draft</button>
+              </form>
+              <form class="inline" method="post" action="/skip/{{ it.id }}">
+                <button type="submit" class="danger sm">Skip</button>
+              </form>
+            </div>
+          {% endif %}
+        {% else %}
+          {% if it.body_preview %}
+            <div class="preview-text">{{ it.body_preview }}{% if it.body_preview|length == 300 %}…{% endif %}</div>
+          {% endif %}
+          <div class="actions">
+            <form class="inline" method="post" action="/approve/{{ it.id }}">
+              <button type="submit" class="success">Approve &rarr; Apply tab</button>
+            </form>
+            <form class="inline" method="post" action="/skip/{{ it.id }}">
+              <button type="submit" class="danger sm">Skip</button>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+  <div class="empty">
+    <span class="empty-icon">&#9728;</span>
+    Queue is empty. Click <strong>Run full pipeline</strong> to discover and score jobs.
+  </div>
+{% endif %}
+
+<div class="agent">
+  <h3>Browser agent fallback</h3>
+  <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0 0 0.6rem;">
+    For long-tail sites no scraper supports. The agent navigates and queues candidate jobs.
+  </p>
+  <form method="post" action="/agent" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+    <input type="text" name="goal" placeholder='e.g. "find senior ML jobs in Bangalore on Wellfound"' required style="flex: 1; min-width: 300px;">
+    <button type="submit">Start agent</button>
+  </form>
+</div>
+
+{% endblock %}
