@@ -20,7 +20,9 @@ import re
 from pathlib import Path
 from typing import Any
 
+from autoapply.config import get_settings
 from autoapply.sources.base import JobRecord, upsert_jobs
+from autoapply.sources.llm_extract import extract_jobs_from_text
 
 from .browser import BrowserSession
 from .portals import build_search_url, filter_job_links
@@ -127,6 +129,9 @@ Important:
 - If the page shows a login wall or CAPTCHA, skip and note it.
 - Do NOT save duplicate jobs (same URL twice).
 - Extract as many real jobs as possible — don't stop early.
+- For hiring POSTS (not job listings): read the full post text, extract any HR/recruiter
+  email addresses (e.g. name@company.com), and include them in save_job(hr_email=...).
+- Prefer jobs posted in the last 7 days.
 - When all combos are done, reply with exactly: DONE
 """
 
@@ -485,11 +490,31 @@ class GeminiJobAgent:
 
         email = email or (mailto_links[0] if mailto_links else None)
 
+        llm_jobs: list[dict] = []
+        llm_block = ""
+        if get_settings().scraper_llm_enrich:
+            llm_jobs = await extract_jobs_from_text(
+                text,
+                context="browser_agent_fetch",
+                url=url,
+            )
+            if llm_jobs:
+                best = max(llm_jobs, key=lambda j: float(j.get("confidence") or 0))
+                llm_email = best.get("hr_email")
+                if llm_email and not email:
+                    email = llm_email
+                llm_block = json.dumps(llm_jobs, indent=2)[:2500]
+
         return (
             f"URL: {url}\n"
             f"Email found: {email or '(none)'}\n"
             f"Mailto links: {mailto_links[:3]}\n\n"
-            f"=== PAGE TEXT (first 4500 chars) ===\n{text[:4500]}"
+            + (
+                f"=== LLM EXTRACTION ({len(llm_jobs)} jobs) ===\n{llm_block}\n\n"
+                if llm_block
+                else ""
+            )
+            + f"=== PAGE TEXT (first 4500 chars) ===\n{text[:4500]}"
         )
 
     async def _tool_scroll(self, times: int) -> str:

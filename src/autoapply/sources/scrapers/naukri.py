@@ -18,6 +18,7 @@ from autoapply.db.models import SourceRun
 from autoapply.sources.base import JobRecord, Source
 from autoapply.sources.browser_agent.agent import build_job_agent
 from autoapply.sources.browser_agent.browser import BrowserSession
+from autoapply.sources.scrape_utils import profile_locations, profile_roles
 
 log = logging.getLogger(__name__)
 
@@ -31,9 +32,9 @@ class NaukriScraper(Source):
         settings = get_settings()
         profile = get_profile()
 
-        roles = (profile.target.roles or ["Machine Learning Engineer"])[:4]
-        locations = (profile.target.on_site_cities_ok or ["Bangalore"])[:3]
-        if profile.target.remote_ok:
+        roles = profile_roles(profile)
+        locations = profile_locations(profile)
+        if profile.target.remote_ok and "Work from home" not in locations:
             locations = [*locations, "Work from home"]
 
         run = SourceRun(source=self.name, started_at=datetime.now(UTC))

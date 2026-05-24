@@ -159,7 +159,10 @@ Service-account auth: set `SCORER_SERVICE_ACCOUNT_JSON=./config/service_account.
 |---|---|
 | LinkedIn / Naukri / Instahyre Gmail alerts | ✅ |
 | **Jobs2Web talent-community emails** (Deloitte, Mahindra, etc.) | ✅ |
-| Portal scrapers (LinkedIn, Naukri, Foundit, Instahyre) | ✅ — search uses `profile.yaml` roles + cities |
+| Portal scrapers (LinkedIn, Naukri, Foundit, Instahyre) | ✅ — profile roles + cities, past-week filter |
+| LinkedIn hiring posts (DOM + email extraction) | ✅ |
+| Google Jobs open-web discovery | ✅ (`WEB_DISCOVERY_ENABLED=1`) |
+| LLM email + job extraction on scraped pages | ✅ (`SCRAPER_LLM_ENRICH=1`, default on) |
 | Greenhouse / Lever public APIs | Optional (`INGEST_ATS_SOURCES=1` + `companies.yaml` slugs) |
 | Hirect / Wellfound / Ashby | 🟡 stubs |
 

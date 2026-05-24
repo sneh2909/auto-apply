@@ -46,6 +46,15 @@ class Settings(BaseSettings):
     agent_google_cloud_location: str = "us-central1"
 
     linkedin_browser_dir: Path = Path("./data/linkedin-profile")
+    linkedin_scroll_pages: int = 5
+    linkedin_max_posts_per_query: int = 25
+    linkedin_max_jobs_per_search: int = 12
+    linkedin_fetch_post_pages: bool = True
+    linkedin_fetch_job_pages: bool = True
+    linkedin_jobs_tpr: str = "r604800"  # past week on LinkedIn Jobs
+    linkedin_agent_fallback_min: int = 3  # run LLM agent if DOM finds fewer than this
+    web_discovery_enabled: bool = True  # Google Jobs open-web search
+    scraper_llm_enrich: bool = True  # LLM extracts emails + job details from page text
     naukri_browser_dir: Path = Path("./data/naukri-profile")
     foundit_browser_dir: Path = Path("./data/foundit-profile")
     instahyre_browser_dir: Path = Path("./data/instahyre-profile")

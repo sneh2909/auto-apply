@@ -17,6 +17,7 @@ from autoapply.db.models import SourceRun
 from autoapply.sources.base import JobRecord, Source
 from autoapply.sources.browser_agent.agent import build_job_agent
 from autoapply.sources.browser_agent.browser import BrowserSession
+from autoapply.sources.scrape_utils import profile_locations, profile_roles
 
 log = logging.getLogger(__name__)
 
@@ -30,8 +31,8 @@ class InstahyreScraper(Source):
         settings = get_settings()
         profile = get_profile()
 
-        roles = (profile.target.roles or ["Machine Learning Engineer"])[:4]
-        locations = (profile.target.on_site_cities_ok or ["Bangalore"])[:3]
+        roles = profile_roles(profile)
+        locations = profile_locations(profile)
 
         run = SourceRun(source=self.name, started_at=datetime.now(UTC))
         await run.insert()

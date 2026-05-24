@@ -47,9 +47,10 @@ def build_search_url(portal: str, role: str, location: str) -> str:
             )
         case "linkedin_posts":
             # LinkedIn content search — finds recruiter posts with HR emails
+            loc_part = f"+{quote_plus(location)}" if location.lower() != "remote" else "+remote"
             return (
                 f"https://www.linkedin.com/search/results/content/"
-                f"?keywords={r}+hiring&datePosted=%22past-week%22"
+                f"?keywords={r}+hiring{loc_part}&datePosted=%22past-week%22&sortBy=%22date_posted%22"
             )
         case "naukri":
             loc_slug = location.lower().replace(" ", "-")
